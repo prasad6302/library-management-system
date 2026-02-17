@@ -1,3 +1,7 @@
+import os
+import dj_database_url
+
+
 """
 Django settings for core project.
 
@@ -23,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-z5xlm8_fk45+ausuxsg&g9dpw#4s68(v_)ac3i7-ht)cxd=z5*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -47,6 +51,13 @@ INSTALLED_APPS = [
 
 
 ]
+
+INSTALLED_APPS += ["corsheaders"]
+
+MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 
 
@@ -86,13 +97,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL")
+    )
 }
+
 
 
 # Password validation
@@ -129,7 +139,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MIDDLEWARE.insert(
+    1, "whitenoise.middleware.WhiteNoiseMiddleware"
+)
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 
