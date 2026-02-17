@@ -9,7 +9,7 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    await api.post("users/", {
+    await api.post("users/me/", {
       username,
       password,
       is_librarian: false, // force student
